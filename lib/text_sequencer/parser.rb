@@ -17,8 +17,8 @@ module TextSequencer
     end
 
     def parse(text)
-      text.split("\n").each_with_index do |s, i|
-        parse_one(s.chomp, i + 1)
+      text.split("\n").each do |s|
+        parse_one(s.chomp)
       end
       self
     end
@@ -51,33 +51,6 @@ module TextSequencer
       @sequence.push([:note, note, length, delay, velocity])
     end
 
-    def note_to_number(note, adjust, row)
-      return nil if note == 'z'
-      off = 'cdefgab'.index(note)
-      a = case adjust
-          when '#'
-            1
-          when '+'
-            1
-          when '-'
-            -1
-          else
-            0
-          end
-      16 + row * 12 + n + a
-    end
-
-    def calc_note_timing(record)
-      length, delay = record[1..2]
-      if length && delay
-        return length, delay
-      elsif length
-        return length, (length / @subbase + @subbase)
-      else
-        return @base, @base
-      end
-    end
-
     def stack_start(record)
       raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length > 1
       @sequence = []
@@ -92,6 +65,37 @@ module TextSequencer
         seq = @stack.pop
         @sequence = @stack.last
         record[1].to_i.times {|i| @sequence += seq }
+      end
+    end
+
+    def command(record)
+      p record
+    end
+
+    def note_to_number(note, adjust, row)
+      return nil if note == 'z'
+      off = 'cdefgab'.index(note)
+      a = case adjust
+          when '#'
+            1
+          when '+'
+            1
+          when '-'
+            -1
+          else
+            0
+          end
+      16 + row * 12 + off + a
+    end
+
+    def calc_note_timing(record)
+      length, delay = record[1..2]
+      if length && delay
+        return length, delay
+      elsif length
+        return length, (length / @subbase + @subbase)
+      else
+        return @base, @base
       end
     end
 

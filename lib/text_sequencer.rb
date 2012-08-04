@@ -2,5 +2,7 @@ require "text_sequencer/version"
 require "text_sequencer/parser"
 
 module TextSequencer
-  # Your code goes here...
+  def self.parse(text)
+    Parser.new.parse(text)
+  end
 end
