@@ -12,6 +12,8 @@ module TextSequencer
       parser.sequence.each do |s|
         translate(s)
       end
+      @track.recalc_times
+      @track.recalc_delta_from_times
     end
 
     private
@@ -19,13 +21,17 @@ module TextSequencer
       case record.first
       when :note
         sym, note, length, delay, velocity = record
-        @track.events <<
-          NoteOn.new(0, note, velocity,
-                     @track.sequence.length_to_delta(@prev_delay))
-        @track.events <<
-          NoteOff.new(0, note, velocity,
-                      @track.sequence.length_to_delta(length))
-        @prev_delay = delay - length
+        if note
+          @track.events <<
+            NoteOn.new(0, note, velocity,
+                       @track.sequence.length_to_delta(@prev_delay))
+          @track.events <<
+            NoteOff.new(0, note, velocity,
+                        @track.sequence.length_to_delta(length))
+          @prev_delay = delay - length
+        else
+          @prev_delay += delay
+        end
       else
       end
     end
