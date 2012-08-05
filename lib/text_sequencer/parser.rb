@@ -5,6 +5,8 @@ module TextSequencer
     DEFAULT_VELOCITY = 100
     NOTE_REGEXP = /^([a-gz])([#\+\-])?([0-9])?$/
 
+    attr_accessor :sequence
+
     def initialize
       @stack = []
       @sequence = []
@@ -14,6 +16,10 @@ module TextSequencer
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
+    end
+
+    def export(exporter)
+      exporter.export(self)
     end
 
     def parse(text)
@@ -64,7 +70,7 @@ module TextSequencer
       if record[1] =~ /\d+/
         seq = @stack.pop
         @sequence = @stack.last
-        record[1].to_i.times {|i| @sequence += seq }
+        record[1].to_i.times {|i| @sequence.concat(seq) }
       end
     end
 
@@ -74,7 +80,7 @@ module TextSequencer
 
     def note_to_number(note, adjust, row)
       return nil if note == 'z'
-      off = 'cdefgab'.index(note)
+      off = [0, 2, 4, 5, 7, 9, 11]['cdefgab'.index(note)]
       a = case adjust
           when '#'
             1
@@ -91,11 +97,11 @@ module TextSequencer
     def calc_note_timing(record)
       length, delay = record[1..2]
       if length && delay
-        return length, delay
+        return length / @base, delay / @base
       elsif length
-        return length, (length / @subbase + @subbase)
+        return length.quo(@base), ((length.quo(@subbase).ceil * @subbase)).quo(@base)
       else
-        return @base, @base
+        return 1.0, 1.0
       end
     end
 
