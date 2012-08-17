@@ -2,9 +2,12 @@ require 'midilib'
 
 module TextSequencer
   class MidilibExporter
-    def initialize(track)
+    include MIDI
+
+    def initialize(track, channel = 0)
       raise ArgumentError, "Not MIDI::Track object: #{track}" unless track.is_a? MIDI::Track
       @track = track
+      @channel = channel
       @prev_delay = 0
     end
 
@@ -23,10 +26,10 @@ module TextSequencer
         sym, note, length, delay, velocity = record
         if note
           @track.events <<
-            NoteOn.new(0, note, velocity,
+            NoteOn.new(@channel, note, velocity,
                        @track.sequence.length_to_delta(@prev_delay))
           @track.events <<
-            NoteOff.new(0, note, velocity,
+            NoteOff.new(@channel, note, velocity,
                         @track.sequence.length_to_delta(length))
           @prev_delay = delay - length
         else
