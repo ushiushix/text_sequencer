@@ -75,7 +75,23 @@ module TextSequencer
     end
 
     def command(record)
-      p record
+      case record[0]
+      when 'base'
+        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        @base = record[1].to_i
+        @subbase = @base / 4
+      when 'subbase'
+        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        @subbase = record[1].to_i
+      when 'row'
+        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        @row = record[1].to_i
+      when 'vel', 'velocity'
+        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        @velocity = record[1].to_i
+      else
+        raise ParseError, "#{@line_num}: #{record.join(' ')}"
+      end
     end
 
     def note_to_number(note, adjust, row)
