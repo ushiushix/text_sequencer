@@ -58,14 +58,14 @@ module TextSequencer
     end
 
     def stack_start(record)
-      raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length > 1
+      raise ParseError.new(@line_num, record.join(' ')) if record.length > 1
       @sequence = []
       @stack.push(@sequence)
     end
 
     def stack_end(record)
       if record.length < 2 || @stack.length == 1
-        raise ParseError, "#{@line_num}: #{record.join(' ')}"
+        raise ParseError.new(@line_num, record.join(' '))
       end
       if record[1] =~ /\d+/
         seq = @stack.pop
@@ -77,20 +77,20 @@ module TextSequencer
     def command(record)
       case record[0]
       when 'base'
-        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @base = record[1].to_i
         @subbase = @base / 4
       when 'subbase'
-        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @subbase = record[1].to_i
       when 'row'
-        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @row = record[1].to_i
       when 'vel', 'velocity'
-        raise ParseError, "#{@line_num}: #{record.join(' ')}" if record.length != 2
+        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @velocity = record[1].to_i
       else
-        raise ParseError, "#{@line_num}: #{record.join(' ')}"
+        raise ParseError.new(@line_num, record.join(' '))
       end
     end
 
@@ -127,5 +127,12 @@ module TextSequencer
     end
   end
 
-  class ParseError < ArgumentError; end
+  class ParseError < ArgumentError
+    attr_reader :line
+
+    def initialize(line, message)
+      super(message)
+      @line = line
+    end
+  end
 end
