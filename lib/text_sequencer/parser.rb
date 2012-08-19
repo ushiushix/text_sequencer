@@ -107,7 +107,7 @@ module TextSequencer
           else
             0
           end
-      16 + row * 12 + off + a
+      12 + row * 12 + off + a
     end
 
     def calc_note_timing(record)
