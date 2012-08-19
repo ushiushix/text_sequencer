@@ -31,6 +31,7 @@ module TextSequencer
 
     private
     def parse_one(line)
+      line.downcase!
       @line_num += 1
       s = line.gsub(/;.*$/, "").strip.split(/,? +|,/)
       return self if s.empty?
