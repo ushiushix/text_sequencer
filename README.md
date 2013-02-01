@@ -10,15 +10,15 @@ Add this line to your application's Gemfile:
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
-    $ gem install tinymid
+    $ gem install text_sequencer
 
 ## Usage
 
-TODO: Write usage instructions here
+See the examples in `examples` directory.
 
 ## Contributing
 
