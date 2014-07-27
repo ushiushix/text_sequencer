@@ -5,21 +5,15 @@ module TextSequencer
     DEFAULT_VELOCITY = 100
     NOTE_REGEXP = /^([a-gz])([#\+\-])?([0-9])?$/
 
-    attr_accessor :sequence
-
-    def initialize
+    def initialize(sequencer)
       @stack = []
-      @sequence = []
-      @stack.push(@sequence)
+      @stack.push(sequencer.sequence)
+      @sequence = @stack.last
       @base = DEFAULT_BASE
       @subbase = @base / 4
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
-    end
-
-    def export(exporter)
-      exporter.export(self)
     end
 
     def parse(text)

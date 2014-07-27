@@ -1,0 +1,9 @@
+2014-07-27  Koichi INOUE  <ushiushix@gmail.com>
+
+	* Version 0.1.0
+	* Now depends on ruby 2.0.0 or later.
+	* TextSequencer::Sequencer is the entry point instead of TextSequencer::Parser.
+
+2012-08-19  Koichi INOUE  <ushiushix@gmail.com>
+
+	* Initial release
