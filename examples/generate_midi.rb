@@ -3,7 +3,7 @@ require 'text_sequencer'
 require 'text_sequencer/midilib'
 
 s = File.open(ARGV[0]).read
-parser = TextSequencer::parse(s)
+sequencer = TextSequencer::parse(s)
 
 include MIDI
 seq = Sequence.new()
@@ -26,7 +26,7 @@ track.events << ProgramChange.new(0, 1, 0)
 
 # Have text_sequencer export its data to the track
 exporter = TextSequencer::MidilibExporter.new(track)
-parser.export(exporter)
+sequencer.export(exporter)
 File.open('example.mid', 'wb') { | file |
   seq.write(file)
 }
