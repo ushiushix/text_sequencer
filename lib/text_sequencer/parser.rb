@@ -32,6 +32,8 @@ module TextSequencer
       case s.first
       when NOTE_REGEXP
         note(s)
+      when /^-?\d{1,3}$/
+        note_digit(s)
       when "("
         stack_start(s)
       when ")"
@@ -47,6 +49,14 @@ module TextSequencer
       adjust = matched[2] || ''
       row = (matched[3] || @row).to_i
       note = note_to_number(matched[1], adjust, row)
+      length, delay = calc_note_timing(record)
+      velocity = record[3] || @velocity
+      @sequence.push([:note, note, length, delay, velocity])
+    end
+
+    def note_digit(record)
+      (1..3).each {|i| record[i] = int_value(record[i]) }
+      note = record.first.to_i
       length, delay = calc_note_timing(record)
       velocity = record[3] || @velocity
       @sequence.push([:note, note, length, delay, velocity])
