@@ -118,7 +118,7 @@ module TextSequencer
     def calc_note_timing(record)
       length, delay = record[1..2]
       if length && delay
-        return length / @base, delay / @base
+        return length.quo(@base), delay.quo(@base)
       elsif length
         return length.quo(@base), ((length.quo(@subbase).ceil * @subbase)).quo(@base)
       else

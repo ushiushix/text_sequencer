@@ -1,3 +1,7 @@
+2014-08-10  Koichi INOUE  <inoue@windy>
+
+	* Fix calculation of note timing when length and delay is specified.
+
 2014-07-30  Koichi INOUE  <inoue@windy>
 
 	* Version 0.1.1
