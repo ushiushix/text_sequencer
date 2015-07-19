@@ -37,7 +37,9 @@ module TextSequencer
         note(s)
       when /^-?\d{1,3}$/
         note_digit(s)
-      when /^([a-z0-9_]+)?\(/
+      when /^([a-z0-9_]+)?\(\)$/
+        call_macro(s)
+      when /^([a-z0-9_]+)?\($/
         stack_start(s)
       when ')'
         stack_end(s)
@@ -68,20 +70,15 @@ module TextSequencer
     def stack_start(record)
       fail ParseError.new(@line_num, record.join(' ')) if record.length > 1
       @sequence = []
-      if /^([a-z0-9_]+)\(/ =~ record.first # has macro name
-         @stack.push($1.to_sym)
-      end
+      match = /^(?<name>[a-z0-9_]+)\($/.match(record.first)
+      @stack.push(match[:name].to_sym) if match # has macro name
       @stack.push(@sequence)
     end
 
     def stack_end(record)
-      if @stack.length == 1
-        fail ParseError.new(@line_num, record.join(' '))
-      end
+      fail ParseError.new(@line_num, record.join(' ')) if @stack.length == 1
       seq = @stack.pop
-      if /^\d+$/ =~ record[1]
-        seq = seq * record[1].to_i
-      end
+      seq *= record[1].to_i if /^\d+$/ =~ record[1]
       if @stack.last.is_a? Symbol
         @macros[@stack.pop] = seq
         @sequence = @stack.last
@@ -109,6 +106,14 @@ module TextSequencer
       else
         fail ParseError.new(@line_num, record.join(' '))
       end
+    end
+
+    def call_macro(record)
+      match = /^(?<name>[a-z0-9_]+)\(/.match(record.first)
+      fail ParseError.new(@line_num, record.join(' ')) unless match
+      name = match[:name].to_sym
+      fail ParseError.new(@line_num, record.join(' ')) unless @macros[name]
+      @sequence.concat(@macros[name])
     end
 
     def note_to_number(note, adjust, row)
