@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'text_sequencer'
-require 'text_sequencer/midilib'
+require 'text_sequencer/midilib_exporter'
 
 s = File.open(ARGV[0]).read
 sequencer = TextSequencer.parse(s)
