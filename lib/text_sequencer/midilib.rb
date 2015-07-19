@@ -5,7 +5,7 @@ module TextSequencer
     include MIDI
 
     def initialize(track, channel = 0)
-      raise ArgumentError, "Not MIDI::Track object: #{track}" unless track.is_a? MIDI::Track
+      fail ArgumentError, "Not MIDI::Track object: #{track}" unless track.is_a? MIDI::Track
       @track = track
       @channel = channel
       @prev_delay = 0
@@ -20,6 +20,7 @@ module TextSequencer
     end
 
     private
+
     def translate(record)
       case record.first
       when :note
@@ -35,7 +36,6 @@ module TextSequencer
         else
           @prev_delay += delay
         end
-      else
       end
     end
   end
