@@ -1,3 +1,6 @@
+2015-07-19  Koichi INOUE  <inoue@windy.local>
+* Rename midilib.rb to midilib_exporter.rb to match the class name.
+
 2014-08-10  Koichi INOUE  <inoue@windy>
 
 	* Fix calculation of note timing when length and delay is specified.
