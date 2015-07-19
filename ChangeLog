@@ -1,5 +1,10 @@
 2015-07-19  Koichi INOUE  <inoue@windy.local>
-* Rename midilib.rb to midilib_exporter.rb to match the class name.
+
+	* Add macro feature.
+
+2015-07-19  Koichi INOUE  <inoue@windy.local>
+
+	* Rename midilib.rb to midilib_exporter.rb to match the class name.
 
 2014-08-10  Koichi INOUE  <inoue@windy>
 
