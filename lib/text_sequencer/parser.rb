@@ -15,6 +15,7 @@ module TextSequencer
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
+      @macros = {}
     end
 
     def parse(text)
@@ -36,7 +37,7 @@ module TextSequencer
         note(s)
       when /^-?\d{1,3}$/
         note_digit(s)
-      when '('
+      when /^([a-z0-9_]+)?\(/
         stack_start(s)
       when ')'
         stack_end(s)
@@ -67,16 +68,27 @@ module TextSequencer
     def stack_start(record)
       fail ParseError.new(@line_num, record.join(' ')) if record.length > 1
       @sequence = []
+      if /^([a-z0-9_]+)\(/ =~ record.first # has macro name
+         @stack.push($1.to_sym)
+      end
       @stack.push(@sequence)
     end
 
     def stack_end(record)
-      if record.length < 2 || @stack.length == 1 || record[1] !~ /\d+/
+      if @stack.length == 1
         fail ParseError.new(@line_num, record.join(' '))
       end
       seq = @stack.pop
-      @sequence = @stack.last
-      record[1].to_i.times { |_i| @sequence.concat(seq) }
+      if /^\d+$/ =~ record[1]
+        seq = seq * record[1].to_i
+      end
+      if @stack.last.is_a? Symbol
+        @macros[@stack.pop] = seq
+        @sequence = @stack.last
+      else
+        @sequence = @stack.last
+        @sequence.concat(seq)
+      end
     end
 
     def command(record)
