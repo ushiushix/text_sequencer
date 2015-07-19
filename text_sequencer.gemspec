@@ -4,11 +4,11 @@ require File.expand_path('../lib/text_sequencer/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ['Koichi Inoue']
   gem.email         = ['ushiushix@gmail.com']
-  gem.description   = 'Parse dedicated text notation to generate MIDI data..'
-  gem.summary       = '
-text_sequencer parses simple text notation of musical score and allows you to generate sound files. Currently it supports using midilib to export MIDI data.
-
-'
+  gem.description   = 'Parse dedicated text notation to generate MIDI data.'
+  gem.summary       = <<EOC
+text_sequencer parses simple text notation of musical score and allows you to generate sound files.
+Currently it supports using midilib to export MIDI data.
+EOC
   gem.homepage      = 'http://github.com/ushiushix/text_sequencer'
 
   gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)

@@ -1,4 +1,5 @@
 module TextSequencer
+  # Parse the text music notation to a sequence of notes.
   class Parser
     DEFAULT_BASE = 48
     DEFAULT_ROW = 4
@@ -70,14 +71,12 @@ module TextSequencer
     end
 
     def stack_end(record)
-      if record.length < 2 || @stack.length == 1
+      if record.length < 2 || @stack.length == 1 || record[1] !~ /\d+/
         fail ParseError.new(@line_num, record.join(' '))
       end
-      if record[1] =~ /\d+/
-        seq = @stack.pop
-        @sequence = @stack.last
-        record[1].to_i.times { |_i| @sequence.concat(seq) }
-      end
+      seq = @stack.pop
+      @sequence = @stack.last
+      record[1].to_i.times { |_i| @sequence.concat(seq) }
     end
 
     def command(record)
@@ -133,6 +132,7 @@ module TextSequencer
     end
   end
 
+  # Indicate parser error
   class ParseError < ArgumentError
     attr_reader :line
 

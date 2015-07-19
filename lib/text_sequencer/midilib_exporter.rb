@@ -1,6 +1,7 @@
 require 'midilib'
 
 module TextSequencer
+  # Export note sequence to MIDI using midilib.
   class MidilibExporter
     include MIDI
 
@@ -24,7 +25,7 @@ module TextSequencer
     def translate(record)
       case record.first
       when :note
-        sym, note, length, delay, velocity = record
+        _sym, note, length, delay, velocity = record
         if note
           @track.events <<
             NoteOn.new(@channel, note, velocity,

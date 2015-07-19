@@ -1,4 +1,5 @@
 module TextSequencer
+  # Hold the note sequence
   class Sequencer
     attr_accessor :sequence
 

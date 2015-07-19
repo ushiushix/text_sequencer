@@ -1,3 +1,4 @@
+# Text Sequencer
 module TextSequencer
   VERSION = '0.1.2'
 end
