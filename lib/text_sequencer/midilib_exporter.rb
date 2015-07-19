@@ -1,11 +1,12 @@
 require 'midilib'
 
 module TextSequencer
+  # Export note sequence to MIDI using midilib.
   class MidilibExporter
     include MIDI
 
     def initialize(track, channel = 0)
-      raise ArgumentError, "Not MIDI::Track object: #{track}" unless track.is_a? MIDI::Track
+      fail ArgumentError, "Not MIDI::Track object: #{track}" unless track.is_a? MIDI::Track
       @track = track
       @channel = channel
       @prev_delay = 0
@@ -20,10 +21,11 @@ module TextSequencer
     end
 
     private
+
     def translate(record)
       case record.first
       when :note
-        sym, note, length, delay, velocity = record
+        _sym, note, length, delay, velocity = record
         if note
           @track.events <<
             NoteOn.new(@channel, note, velocity,
@@ -35,7 +37,6 @@ module TextSequencer
         else
           @prev_delay += delay
         end
-      else
       end
     end
   end

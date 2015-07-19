@@ -1,4 +1,5 @@
 module TextSequencer
+  # Parse the text music notation to a sequence of notes.
   class Parser
     DEFAULT_BASE = 48
     DEFAULT_ROW = 4
@@ -24,19 +25,20 @@ module TextSequencer
     end
 
     private
+
     def parse_one(line)
       line.downcase!
       @line_num += 1
-      s = line.gsub(/;.*$/, "").strip.split(/,? +|,/)
+      s = line.gsub(/;.*$/, '').strip.split(/,? +|,/)
       return self if s.empty?
       case s.first
       when NOTE_REGEXP
         note(s)
       when /^-?\d{1,3}$/
         note_digit(s)
-      when "("
+      when '('
         stack_start(s)
-      when ")"
+      when ')'
         stack_end(s)
       else
         command(s)
@@ -44,7 +46,7 @@ module TextSequencer
     end
 
     def note(record)
-      (1..3).each {|i| record[i] = int_value(record[i]) }
+      (1..3).each { |i| record[i] = int_value(record[i]) }
       matched = record.first.match(NOTE_REGEXP)
       adjust = matched[2] || ''
       row = (matched[3] || @row).to_i
@@ -55,7 +57,7 @@ module TextSequencer
     end
 
     def note_digit(record)
-      (1..3).each {|i| record[i] = int_value(record[i]) }
+      (1..3).each { |i| record[i] = int_value(record[i]) }
       note = record.first.to_i
       length, delay = calc_note_timing(record)
       velocity = record[3] || @velocity
@@ -63,39 +65,37 @@ module TextSequencer
     end
 
     def stack_start(record)
-      raise ParseError.new(@line_num, record.join(' ')) if record.length > 1
+      fail ParseError.new(@line_num, record.join(' ')) if record.length > 1
       @sequence = []
       @stack.push(@sequence)
     end
 
     def stack_end(record)
-      if record.length < 2 || @stack.length == 1
-        raise ParseError.new(@line_num, record.join(' '))
+      if record.length < 2 || @stack.length == 1 || record[1] !~ /\d+/
+        fail ParseError.new(@line_num, record.join(' '))
       end
-      if record[1] =~ /\d+/
-        seq = @stack.pop
-        @sequence = @stack.last
-        record[1].to_i.times {|i| @sequence.concat(seq) }
-      end
+      seq = @stack.pop
+      @sequence = @stack.last
+      record[1].to_i.times { |_i| @sequence.concat(seq) }
     end
 
     def command(record)
       case record[0]
       when 'base'
-        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
+        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @base = record[1].to_i
         @subbase = @base / 4
       when 'subbase'
-        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
+        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @subbase = record[1].to_i
       when 'row'
-        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
+        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @row = record[1].to_i
       when 'vel', 'velocity'
-        raise ParseError.new(@line_num, record.join(' ')) if record.length != 2
+        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @velocity = record[1].to_i
       else
-        raise ParseError.new(@line_num, record.join(' '))
+        fail ParseError.new(@line_num, record.join(' '))
       end
     end
 
@@ -132,6 +132,7 @@ module TextSequencer
     end
   end
 
+  # Indicate parser error
   class ParseError < ArgumentError
     attr_reader :line
 
