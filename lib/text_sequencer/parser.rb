@@ -11,7 +11,6 @@ module TextSequencer
       @stack.push(sequencer.sequence)
       @sequence = @stack.last
       @base = DEFAULT_BASE
-      @subbase = @base / 4
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
@@ -54,17 +53,17 @@ module TextSequencer
       adjust = matched[2] || ''
       row = (matched[3] || @row).to_i
       note = note_to_number(matched[1], adjust, row)
-      length, delay = calc_note_timing(record)
+      st, gt = calc_note_timing(record)
       velocity = record[3] || @velocity
-      @sequence.push([:note, note, length, delay, velocity])
+      @sequence.push([:note, note, gt, st, velocity])
     end
 
     def note_digit(record)
       (1..3).each { |i| record[i] = int_value(record[i]) }
       note = record.first.to_i
-      length, delay = calc_note_timing(record)
+      gt, st = calc_note_timing(record)
       velocity = record[3] || @velocity
-      @sequence.push([:note, note, length, delay, velocity])
+      @sequence.push([:note, note, gt, st, velocity])
     end
 
     def stack_start(record)
@@ -93,10 +92,6 @@ module TextSequencer
       when 'base'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @base = record[1].to_i
-        @subbase = @base / 4
-      when 'subbase'
-        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
-        @subbase = record[1].to_i
       when 'row'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @row = record[1].to_i
@@ -133,11 +128,11 @@ module TextSequencer
     end
 
     def calc_note_timing(record)
-      length, delay = record[1..2]
-      if length && delay
-        return length.quo(@base), delay.quo(@base)
-      elsif length
-        return length.quo(@base), ((length.quo(@subbase).ceil * @subbase)).quo(@base)
+      st, gt = record[1..2]
+      if st && gt
+        return st.quo(@base), gt.quo(@base)
+      elsif st
+        return st.quo(@base), (st == 0 ? 1 : st.quo(@base))
       else
         return 1.0, 1.0
       end
