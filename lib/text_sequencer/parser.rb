@@ -11,6 +11,8 @@ module TextSequencer
       @stack.push(sequencer.sequence)
       @sequence = @stack.last
       @base = DEFAULT_BASE
+      @step = DEFAULT_BASE
+      @gate = DEFAULT_BASE
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
@@ -90,12 +92,9 @@ module TextSequencer
 
     def command(record)
       case record[0]
-      when 'base'
+      when 'base', 'step', 'gate', 'row'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
-        @base = record[1].to_i
-      when 'row'
-        fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
-        @row = record[1].to_i
+        instance_variable_set("@#{record[0]}".to_sym, record[1].to_i)
       when 'vel', 'velocity'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @velocity = record[1].to_i
@@ -137,9 +136,9 @@ module TextSequencer
       if st && gt
         return st.quo(@base), gt.quo(@base)
       elsif st
-        return st.quo(@base), 1.0
+        return st.quo(@base), @gate.quo(@base)
       else
-        return 1.0, 1.0
+        return @step.quo(@base), @gate.quo(@base)
       end
     end
 
