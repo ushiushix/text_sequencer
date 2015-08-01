@@ -21,6 +21,7 @@ module TextSequencer
       text.split("\n").each do |s|
         parse_one(s.chomp)
       end
+      finalize
       self
     end
 
@@ -111,6 +112,10 @@ module TextSequencer
       @sequence.concat(@macros[name])
     end
 
+    def finalize
+      fail ParseError.new(@line_num, 'Mismatched ()') if @stack.length != 1
+    end
+    
     def note_to_number(note, adjust, row)
       return nil if note == 'z'
       off = [0, 2, 4, 5, 7, 9, 11]['cdefgab'.index(note)]

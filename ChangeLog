@@ -1,5 +1,7 @@
 2015-08-01  Koichi INOUE  <inoue@windy.local>
 
+	* Raise error on unclosed parentheses at the end of input.
+
 	* ST and GT was reversed when the note was written in digit.
 
 2015-07-31  Koichi INOUE  <inoue@windy.local>
