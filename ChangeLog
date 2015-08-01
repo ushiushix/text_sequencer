@@ -1,3 +1,7 @@
+2015-08-01  Koichi INOUE  <inoue@windy.local>
+
+	* ST and GT was reversed when the note was written in digit.
+
 2015-07-31  Koichi INOUE  <inoue@windy.local>
 
 	* Exchange 2nd and 3rd colum in text notation. The order is now step time and gate time, which is generally accepted.
