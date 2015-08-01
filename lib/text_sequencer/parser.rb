@@ -61,7 +61,7 @@ module TextSequencer
     def note_digit(record)
       (1..3).each { |i| record[i] = int_value(record[i]) }
       note = record.first.to_i
-      gt, st = calc_note_timing(record)
+      st, gt = calc_note_timing(record)
       velocity = record[3] || @velocity
       @sequence.push([:note, note, gt, st, velocity])
     end
@@ -132,7 +132,7 @@ module TextSequencer
       if st && gt
         return st.quo(@base), gt.quo(@base)
       elsif st
-        return st.quo(@base), (st == 0 ? 1 : st.quo(@base))
+        return st.quo(@base), 1.0
       else
         return 1.0, 1.0
       end
