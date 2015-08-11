@@ -1,6 +1,6 @@
 base 48
 step 48
-gate 40
+gate 0
 vel 120
 
 chord1(

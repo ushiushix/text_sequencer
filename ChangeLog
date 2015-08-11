@@ -1,3 +1,10 @@
+2015-08-11  Koichi INOUE  <inoue@windy.local>
+
+	* Default value is changed when st and/or gt is omited.
+	- If gt is omited, it is taken from gate value. If gate value is 0, it inherits st for the note. By default gate value is initialized as 0.
+	- If gt is omited and st is 0, gt is taken from step value.
+	- If st is omited, st is taken from step value.
+
 2015-08-01  Koichi INOUE  <inoue@windy.local>
 
 	* Add `step` and `gate` command to set default ST and GT respectively.

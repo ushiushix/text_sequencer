@@ -12,7 +12,7 @@ module TextSequencer
       @sequence = @stack.last
       @base = DEFAULT_BASE
       @step = DEFAULT_BASE
-      @gate = DEFAULT_BASE
+      @gate = 0   # Means inherits the step
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
       @line_num = 0
@@ -136,9 +136,11 @@ module TextSequencer
       if st && gt
         return st.quo(@base), gt.quo(@base)
       elsif st
-        return st.quo(@base), @gate.quo(@base)
+        return st.quo(@base),
+               @gate != 0 ? @gate.quo(@base) : (st != 0 ? st.quo(@base) : @step.quo(@base))
       else
-        return @step.quo(@base), @gate.quo(@base)
+        return @step.quo(@base),
+               @gate != 0 ? @gate.quo(@base) : @step.quo(@base)
       end
     end
 
