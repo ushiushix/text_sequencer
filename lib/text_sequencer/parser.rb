@@ -15,6 +15,7 @@ module TextSequencer
       @gate = 0   # Means inherits the step
       @row = DEFAULT_ROW
       @velocity = DEFAULT_VELOCITY
+      @shift = 0
       @line_num = 0
       @macros = {}
     end
@@ -56,6 +57,7 @@ module TextSequencer
       adjust = matched[2] || ''
       row = (matched[3] || @row).to_i
       note = note_to_number(matched[1], adjust, row)
+      note += @shift if note
       st, gt = calc_note_timing(record)
       velocity = record[3] || @velocity
       @sequence.push([:note, note, gt, st, velocity])
@@ -64,6 +66,7 @@ module TextSequencer
     def note_digit(record)
       (1..3).each { |i| record[i] = int_value(record[i]) }
       note = record.first.to_i
+      note += @shift if note
       st, gt = calc_note_timing(record)
       velocity = record[3] || @velocity
       @sequence.push([:note, note, gt, st, velocity])
@@ -92,7 +95,7 @@ module TextSequencer
 
     def command(record)
       case record[0]
-      when 'base', 'step', 'gate', 'row'
+      when 'base', 'step', 'gate', 'row', 'shift'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         instance_variable_set("@#{record[0]}".to_sym, record[1].to_i)
       when 'vel', 'velocity'

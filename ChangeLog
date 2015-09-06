@@ -1,3 +1,7 @@
+2015-09-06  Koichi INOUE  <inoue@windy.local>
+
+	* Add 'shift' command.  It defines the offset to the note digit. Default is 0.
+
 2015-08-11  Koichi INOUE  <inoue@windy.local>
 
 	* Default value is changed when st and/or gt is omited.

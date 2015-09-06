@@ -2,6 +2,7 @@ base 48
 step 48
 gate 0
 vel 120
+;shift 7
 
 chord1(
   c4 0 48
