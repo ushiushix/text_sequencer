@@ -27,6 +27,9 @@ track.events << ProgramChange.new(0, 1, 0)
 # Have text_sequencer export its data to the track
 exporter = TextSequencer::MidilibExporter.new(track)
 sequencer.export(exporter)
+track.events.each do |e|
+  puts e
+end
 File.open('example.mid', 'wb') do |file|
   seq.write(file)
 end
