@@ -1,5 +1,9 @@
 # CHANGELOG
 ## 2022-11-03
+* Bump version to 1.1.1
+* Allow 64 as pb value, which is mapped to maximum pitch bend value
+
+## 2022-11-03
 * Bump version to 1.1.0
 
 ## 2022-11-03
