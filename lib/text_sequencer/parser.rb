@@ -113,8 +113,9 @@ module TextSequencer
       when 'pb', 'pitch_bend'
         fail ParseError.new(@line_num, record.join(' ')) if record.length < 2
         bend, delay = record[1].to_i, record[2].to_i
-        fail ParseError.new(@line_num, record.join(' ')) if bend >= 64 || bend < -64
-        real_bend = bend * 64
+        fail ParseError.new(@line_num, record.join(' ')) if bend > 64 || bend < -64
+        # Allow 64 as valid input to specify maximum bend value
+        real_bend = [bend * 128, 8191].min
         pitch_bend(real_bend, delay)
       else
         fail ParseError.new(@line_num, record.join(' '))
