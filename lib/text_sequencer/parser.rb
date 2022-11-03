@@ -72,6 +72,10 @@ module TextSequencer
       @sequence.push([:note, note, gt, st, velocity])
     end
 
+    def pitch_bend(val, delay)
+      @sequence.push([:pitch_bend, val, delay.quo(@base)])
+    end
+
     def stack_start(record)
       fail ParseError.new(@line_num, record.join(' ')) if record.length > 1
       @sequence = []
@@ -101,6 +105,17 @@ module TextSequencer
       when 'vel', 'velocity'
         fail ParseError.new(@line_num, record.join(' ')) if record.length != 2
         @velocity = record[1].to_i
+      when 'pbx', 'pitch_bend_exact'
+        fail ParseError.new(@line_num, record.join(' ')) if record.length < 2
+        bend, delay = record[1].to_i, record[2].to_i
+        fail ParseError.new(@line_num, record.join(' ')) if bend > 8191 || bend < -8192
+        pitch_bend(bend, delay)
+      when 'pb', 'pitch_bend'
+        fail ParseError.new(@line_num, record.join(' ')) if record.length < 2
+        bend, delay = record[1].to_i, record[2].to_i
+        fail ParseError.new(@line_num, record.join(' ')) if bend >= 64 || bend < -64
+        real_bend = bend * 64
+        pitch_bend(real_bend, delay)
       else
         fail ParseError.new(@line_num, record.join(' '))
       end

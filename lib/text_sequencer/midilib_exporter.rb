@@ -37,6 +37,13 @@ module TextSequencer
         else
           @prev_delay += delay
         end
+      when :pitch_bend
+        _sym, val, delay = record
+        # midilib accepts val between 0 and 16383
+        val += 8192
+        @track.events << PitchBend.new(@channel, val,
+                                       @track.sequence.length_to_delta(@prev_delay))
+        @prev_delay = delay
       end
     end
   end
