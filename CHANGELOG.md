@@ -1,5 +1,8 @@
 # CHANGELOG
 ## 2022-11-03
+* Bump version to 1.1.0
+
+## 2022-11-03
 * Add pb and pbx command
     * pbx XX YY: Set pitch bend value to XX (-8192 to 8191) with step time YY
     * pb XX YY: Set pitch bend value to XX(-64 to 63) * 64, with step time YY. User-friendly version
